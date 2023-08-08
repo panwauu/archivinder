@@ -1,15 +1,26 @@
 <script setup lang="ts">
 import CodeResults from '@/components/CodeResults.vue'
 import SearchForm from '@/components/SearchForm.vue'
+import Divider from 'primevue/divider'
 
-import { status } from '@/helpers/search'
 import SettingsDialog from '@/components/SettingsDialog.vue'
 </script>
 
 <template>
-  <main>
+  <main
+    class="p-component"
+    style="
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    "
+  >
     <SettingsDialog />
     <SearchForm />
-    <CodeResults :results="status.results" />
+    <Divider />
+    <CodeResults />
   </main>
 </template>

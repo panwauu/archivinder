@@ -30,10 +30,7 @@ const props = defineProps<{
             <small>{{ result.startline + index }}</small>
           </code>
         </a>
-        <pre
-          class="code-content"
-          :class="{ 'code-with-keyword': index === 2 }"
-        ><code>{{ line }}</code></pre>
+        <pre class="code-content"><code>{{ line }}</code></pre>
       </template>
       <div class="code-line-number code-block-padding"></div>
       <div></div>

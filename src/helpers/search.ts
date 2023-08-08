@@ -1,7 +1,8 @@
 import { useLocalStorage } from '@vueuse/core'
 import { Gitlab, type BlobSchema, type ProjectSchema } from '@gitbeaker/rest'
 import { options } from '@/helpers/options'
-import { ref, type PropType } from 'vue'
+import { ref } from 'vue'
+import { wildcardMatch } from './wildcard'
 
 export type SearchOptions = {
   searchKeyword: string
@@ -33,7 +34,7 @@ export const status = ref<StatusType>({
 })
 
 export function start() {
-  if (status.value.status === 'running') return
+  if (status.value.status === 'running' || status.value.status === 'stopping') return
 
   status.value.searchOptions = searchOptions.value
   status.value.results = []
@@ -89,9 +90,9 @@ async function search() {
   })
 
   if (status.value.results.length === 0) {
-    const groups = await api.Groups.all()
-    console.log(groups)
-    // todo: filter groups
+    const groups = (await api.Groups.all()).filter((g) =>
+      wildcardMatch(status.value.searchOptions.groupKeyword, g.full_path)
+    )
 
     if (status.value.status === ('stopping' as StatusType['status'])) {
       status.value.status = 'idle'
@@ -101,17 +102,18 @@ async function search() {
     let projects: ProjectSchema[] = []
     for (const group of groups) {
       const projectsInGroup = await api.Groups.allProjects(group.id, { includeSubgroups: false })
-      projects = projects.concat(projectsInGroup)
+      projects = projects.concat(
+        projectsInGroup.filter((p) =>
+          wildcardMatch(status.value.searchOptions.projectKeyword, p.name)
+        )
+      )
 
       if (status.value.status === ('stopping' as StatusType['status'])) {
         status.value.status = 'idle'
         return
       }
     }
-    console.log(projects)
-    // todo: filter projects
 
-    // todo: Problem with existing values
     for (const project of projects) {
       status.value.results.push({ project: project, results: null, error: null })
     }
@@ -130,12 +132,15 @@ async function search() {
         projectId: entry.project.id,
         perPage: 100
       })
-      console.log(searchResult)
-      entry.results = searchResult
+      entry.results = searchResult.filter((b) =>
+        wildcardMatch('*' + status.value.searchOptions.fileKeyword, b.path)
+      )
     } catch (e) {
       console.error(e)
       entry.error = e
     }
     await new Promise((resolve) => setTimeout(resolve, options.value.timeout))
   }
+
+  status.value.status = 'idle'
 }

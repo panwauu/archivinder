@@ -1,41 +1,16 @@
 <script setup lang="ts">
-import { type BlobSchema, type ProjectSchema } from '@gitbeaker/rest'
-
-const props = defineProps<{
-  results: { project: ProjectSchema; results: BlobSchema[] | null; error: any }[]
-}>()
-
-import { computed } from 'vue'
-import CodeHolder from './CodeHolder.vue'
-
-const results = computed(() =>
-  props.results.reduce(
-    (arr, curr) => {
-      if (curr.results == null) {
-        return arr
-      }
-      for (const element of curr.results) {
-        arr = arr.concat({ result: element, project: curr.project })
-      }
-      return arr
-    },
-    [] as { project: ProjectSchema; result: BlobSchema }[]
-  )
-)
+import ProjectResults from './ProjectResults.vue'
+import { status } from '@/helpers/search'
 </script>
 
 <template>
-  <div
-    v-for="result in results"
-    :key="`line-${result.project.id}-${result.result.id}`"
-    class="result-element"
-  >
-    <CodeHolder :result="result.result" :project="result.project" />
+  <div v-for="projectResult in status.results" :key="`project-${projectResult.project.id}`">
+    <ProjectResults :projectResult="projectResult" class="project-results" />
   </div>
 </template>
 
 <style scoped>
-.result-element {
-  margin: 10px;
+.project-results {
+  margin: 5px 0;
 }
 </style>
