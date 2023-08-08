@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@gitbeaker/rest": "^39.10.2",
+    "@vueuse/core": "^10.3.0",
+    "primeicons": "^6.0.1",
     "primevue": "^3.31.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"

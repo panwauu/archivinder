@@ -9,5 +9,6 @@ app.use(router)
 app.use(PrimeVue)
 
 import 'primevue/resources/themes/lara-light-indigo/theme.css'
+import 'primeicons/primeicons.css'
 
 app.mount('#app')
