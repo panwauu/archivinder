@@ -79,8 +79,10 @@ async function search() {
     options.value.host === '' ||
     options.value.token == null ||
     options.value.token === ''
-  )
+  ) {
+    console.error('Some credentials are empty')
     return
+  }
 
   status.value.status = 'running' as StatusType['status']
 
@@ -90,33 +92,40 @@ async function search() {
   })
 
   if (status.value.results.length === 0) {
-    const groups = (await api.Groups.all()).filter((g) =>
-      wildcardMatch(status.value.searchOptions.groupKeyword, g.full_path)
-    )
-
-    if (status.value.status === ('stopping' as StatusType['status'])) {
-      status.value.status = 'idle'
-      return
-    }
-
-    let projects: ProjectSchema[] = []
-    for (const group of groups) {
-      const projectsInGroup = await api.Groups.allProjects(group.id, { includeSubgroups: false })
-      projects = projects.concat(
-        projectsInGroup.filter((p) =>
-          wildcardMatch(status.value.searchOptions.projectKeyword, p.name)
-        )
+    try {
+      const groups = (await api.Groups.all()).filter((g) =>
+        wildcardMatch(status.value.searchOptions.groupKeyword, g.full_path)
       )
 
       if (status.value.status === ('stopping' as StatusType['status'])) {
         status.value.status = 'idle'
         return
       }
-    }
 
-    for (const project of projects) {
-      if (project.archived || project.empty_repo) continue
-      status.value.results.push({ project: project, results: null, error: null })
+      let projects: ProjectSchema[] = []
+      for (const group of groups) {
+        const projectsInGroup = await api.Groups.allProjects(group.id, { includeSubgroups: false })
+        projects = projects.concat(
+          projectsInGroup.filter((p) =>
+            wildcardMatch(status.value.searchOptions.projectKeyword, p.name)
+          )
+        )
+
+        if (status.value.status === ('stopping' as StatusType['status'])) {
+          status.value.status = 'idle'
+          return
+        }
+      }
+
+      for (const project of projects) {
+        if (project.archived || project.empty_repo) continue
+        status.value.results.push({ project: project, results: null, error: null })
+      }
+    } catch (err) {
+      status.value.status = 'idle'
+      console.error(err)
+      console.error('This error is likely because of wrong Credentials')
+      return
     }
   }
 
