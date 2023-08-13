@@ -13,7 +13,7 @@ defineProps<{ sidebar: boolean }>()
   <div style="max-width: 600px; width: 100%; margin: 0 auto">
     <div class="input-container">
       <div class="logo">
-        <img src="src/assets/icon.png" />
+        <img src="@/assets/icon.png" />
         Archivinder
       </div>
       <Divider v-if="sidebar" />
