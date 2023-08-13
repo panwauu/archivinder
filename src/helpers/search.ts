@@ -115,6 +115,7 @@ async function search() {
     }
 
     for (const project of projects) {
+      if (project.archived || project.empty_repo) continue
       status.value.results.push({ project: project, results: null, error: null })
     }
   }
