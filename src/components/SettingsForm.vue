@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
+import Password from 'primevue/password'
 import { options } from '@/helpers/options'
 </script>
 
@@ -12,7 +13,7 @@ import { options } from '@/helpers/options'
 
   <div class="input-container">
     <label for="token">PAT for Gitlab</label>
-    <InputText id="token" v-model="options.token" />
+    <Password id="token" v-model="options.token" :feedback="false" toggleMask />
   </div>
 
   <div class="input-container">
@@ -26,5 +27,11 @@ import { options } from '@/helpers/options'
   display: flex;
   flex-direction: column;
   margin: 5px 0;
+}
+</style>
+
+<style global>
+#token input {
+  width: 100%;
 }
 </style>
