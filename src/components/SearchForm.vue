@@ -17,54 +17,56 @@ defineProps<{ sidebar: boolean }>()
         Archivinder
       </div>
       <Divider v-if="sidebar" />
-      <label for="host">Search keyword</label>
-      <InputText
-        v-if="sidebar"
-        id="host"
-        v-model="searchOptions.searchKeyword"
-        :disabled="status.status != 'idle'"
-      />
-      <div class="p-inputgroup input-container-inputgroup">
+      <div style="padding: 0px 5px" class="input-container">
+        <label for="host">Search keyword</label>
         <InputText
-          v-if="!sidebar"
+          v-if="sidebar"
           id="host"
           v-model="searchOptions.searchKeyword"
           :disabled="status.status != 'idle'"
         />
-        <span class="p-inputgroup-addon" v-if="status.status != 'idle'">
-          <i class="pi pi-spin pi-cog" style="font-size: 1rem"></i>
-        </span>
-        <Button
-          icon="pi pi-step-forward"
-          severity="success"
-          @click="start"
-          :disabled="status.status != 'idle'"
-        />
-        <Button
-          icon="pi pi-play"
-          severity="success"
-          @click="resume"
-          :disabled="
-            status.status === 'running' ||
-            (status.status === 'idle' &&
-              !status.results.some((r) => r.error == null && r.results == null)) ||
-            status.searchOptions != searchOptions
-          "
-        />
-        <Button
-          icon="pi pi-replay"
-          severity="warning"
-          @click="retryFailed"
-          :disabled="
-            !status.results.some((r) => r.error != null) || status.searchOptions != searchOptions
-          "
-        />
-        <Button
-          icon="pi pi-times"
-          severity="danger"
-          @click="stop"
-          :disabled="status.status != 'running'"
-        />
+        <div class="p-inputgroup input-container-inputgroup">
+          <InputText
+            v-if="!sidebar"
+            id="host"
+            v-model="searchOptions.searchKeyword"
+            :disabled="status.status != 'idle'"
+          />
+          <span class="p-inputgroup-addon" v-if="status.status != 'idle'">
+            <i class="pi pi-spin pi-cog" style="font-size: 1rem"></i>
+          </span>
+          <Button
+            icon="pi pi-step-forward"
+            severity="success"
+            @click="start"
+            :disabled="status.status != 'idle'"
+          />
+          <Button
+            icon="pi pi-play"
+            severity="success"
+            @click="resume"
+            :disabled="
+              status.status === 'running' ||
+              (status.status === 'idle' &&
+                !status.results.some((r) => r.error == null && r.results == null)) ||
+              status.searchOptions != searchOptions
+            "
+          />
+          <Button
+            icon="pi pi-replay"
+            severity="warning"
+            @click="retryFailed"
+            :disabled="
+              !status.results.some((r) => r.error != null) || status.searchOptions != searchOptions
+            "
+          />
+          <Button
+            icon="pi pi-times"
+            severity="danger"
+            @click="stop"
+            :disabled="status.status != 'running'"
+          />
+        </div>
       </div>
     </div>
 
@@ -120,6 +122,7 @@ defineProps<{ sidebar: boolean }>()
   align-items: center;
   font-size: 1.5rem;
   font-weight: bolder;
+  padding: 5px;
 }
 .logo img {
   margin-right: 5px;
