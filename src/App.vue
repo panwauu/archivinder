@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import CodeResults from '@/components/CodeResults.vue'
 import SearchForm from '@/components/SearchForm.vue'
-
+import DownloadResults from './components/DownloadResults.vue'
 import SettingsDialog from '@/components/SettingsDialog.vue'
+
 import { useWindowSize } from '@vueuse/core'
 import { computed } from 'vue'
 
@@ -17,6 +18,7 @@ const useSidebar = computed(() => useWindowSize().width.value > 800)
     </div>
     <div id="results">
       <CodeResults />
+      <DownloadResults />
     </div>
   </main>
 </template>
